@@ -1,14 +1,14 @@
+const ufList = [
+    { regional: 'RCO', uf: ['', 'AC', 'DF', 'GO', 'MS', 'MT', 'RO', 'TO'] },
+    { regional: 'RMG', uf: ['', 'MG', 'ES'] },
+    { regional: 'RSUL', uf: ['', 'RS'] },
+    { regional: 'RSP', uf: ['', 'SP'] }
+];
+
 // SCRIPT RESPONSÁVEL POR PREENCHER AS UFS DE ACORDO COM O FILTRO DA REGIONAL
 const selectRegional = document.getElementById('slt_regional');
 selectRegional.addEventListener('change', function() {
-    // selectRegional.value
-    const ufList = [
-        { regional: 'RCO', uf: ['', 'AC', 'DF', 'GO', 'MS', 'MT', 'RO', 'TO'] },
-        { regional: 'RMG', uf: ['', 'MG', 'ES'] },
-        { regional: 'RSUL', uf: ['', 'RS'] },
-        { regional: 'RSP', uf: ['', 'SP'] }
-    ];
-
+    
     const selectedRegional = ufList.find(item => item.regional === selectRegional.value);
     const ufSelect = document.getElementById('slt_uf');
     ufSelect.innerHTML = '';
@@ -63,11 +63,17 @@ form.addEventListener('submit', function(e) {
         regional: document.getElementById('slt_regional').value,
         uf: document.getElementById('slt_uf').value,
         dtBegin: document.getElementById('iptDtBegin').value,
-        dtEnd: document.getElementById('iptDtEnd').value
+        dtEnd: document.getElementById('iptDtEnd').value,
+        macro_atividade: document.getElementById('slt_macro_atividade').value
     };
-    // Chama a função async
+
     apiCall(dataForm);
 });
+
+// function validateFormUf(dataForm) {
+//     regional = document.getElementById('slt_regional').value,
+//     uf = document.getElementById('slt_uf').value,
+// }
 
 // FUNÇÃO REQUEST PARA (api.php) PARA PERSISTENCIA DE DADOS
 async function apiCall(dataForm) {

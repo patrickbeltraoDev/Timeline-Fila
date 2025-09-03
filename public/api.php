@@ -4,8 +4,13 @@ require __DIR__ . '/../src/service/DataFilter.php';
 
 $input = json_decode(file_get_contents('php://input'), true);
 
-$dataFilter = new DataFilter($input['uf'], $input['regional'], $input['dtBegin'], $input['dtEnd']);
-
+$dataFilter = new DataFilter(
+    $input['uf'], 
+    $input['regional'], 
+    $input['dtBegin'], 
+    $input['dtEnd'], 
+    $input['macro_atividade']
+);
 
 header('Content-Type: application/json');
-echo json_encode($dataFilter->getFilters());
+echo json_encode($dataFilter->getUF());

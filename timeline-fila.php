@@ -27,7 +27,7 @@
             <option selected disabled value="">UF</option>
         </select>
 
-        <select name="slt_atividade" id="slt_atividade" class="form-control mr-2" title="Selecione uma Atividade">
+        <select name="slt_macro_atividade" id="slt_macro_atividade" class="form-control mr-2" title="Selecione uma Atividade">
             <option selected disabled value="">Atividade</option>
             <option value="INST">Instalação</option>
             <option value="RET">Retirada</option>
