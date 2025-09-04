@@ -86,6 +86,8 @@ async function apiCall(dataForm) {
            body: JSON.stringify(dataForm)
        });
 
+    //    console.log(dataForm);
+
        if (!response.ok) {
            throw new Error('Network response was not ok');
        }
