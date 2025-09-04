@@ -9,11 +9,12 @@
     crossorigin="anonymous"
 >
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+<link rel="stylesheet" href="public/css/graphs.css">
 
 
-<div class="container">
+<div class="container-fluid">
 
-    <form action="#" class="d-flex p-2" id="formFilter">
+    <form action="#" class="container d-flex p-2" id="formFilter">
 
         <select name="slt_regional" id="slt_regional" class="form-control mr-2" title="Selecione uma Regional">
             <option selected disabled value="">Regional</option>
@@ -30,7 +31,8 @@
         <select name="slt_macro_atividade" id="slt_macro_atividade" class="form-control mr-2" title="Selecione uma Atividade">
             <option selected disabled value="">Atividade</option>
             <option value="INST">Instalação</option>
-            <option value="RET">Retirada</option>
+            <option value="REP">Reparo</option>
+            <option value="INST','REP">INST + REP</option>
         </select>
 
         <input type="date" class="form-control mr-2" id="iptDtBegin" aria-describedby="basic-addon3">
@@ -43,16 +45,17 @@
 
     </form>
 
-    <div class="container-fluid" id="chartContainer">
-        
+    <div class="rw-img">
+        <img src="public/image/barra-de-menu.png" alt="">
+    </div>
+
+    <div id="chartContainer"></div>
+
+    <div class="footer">
+        <p><?php echo date('Y'); ?></p>
     </div>
 
 </div>
-
-
-
-
-
 
 
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" 
@@ -63,4 +66,8 @@
 </script>
 <script src="public/js/timeline-fila.js"></script>
 
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- <script src="https://cdn.jsdelivr.net/npm/chart.js@3.0.0/dist/chart.min.js"></script> -->
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
 

@@ -11,10 +11,11 @@ class PdoRepository
         $this->pdo = $pdo;
     }
 
-    public function consultDB(DataFilter $filter)
+    public function hydrateRepoByAtv($filter)
     {
         try {
-            $sql = "SELECT * FROM modulo_bucket_vtal.tbl_vtal_bucket_atividades_bas_fila_uf WHERE 1=1";
+            $sql = "SELECT DAY(DIA) AS dia, macro_atividade, uf, TRUNCATE(fila, 1) AS fila 
+                    FROM modulo_bucket_vtal.tbl_vtal_bucket_atividades_bas_fila_uf WHERE 1=1";
 
             $filters = $filter->getFilters();
             foreach ($filters as $condition) {

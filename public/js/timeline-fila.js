@@ -5,6 +5,18 @@ const ufList = [
     { regional: 'RSP', uf: ['', 'SP'] }
 ];
 
+const btnImglineGrapsh = document.querySelector('.rw-img img');
+btnImglineGrapsh.addEventListener('click', function() {
+    const chartContainer = document.getElementById('chartContainer');
+    if (chartContainer.style.display === 'grid') {
+        chartContainer.style.display = 'flex';
+        chartContainer.style.flexDirection = 'column';
+    } else {
+        chartContainer.style.display = 'grid';
+    }
+  
+});
+
 // SCRIPT RESPONSÁVEL POR PREENCHER AS UFS DE ACORDO COM O FILTRO DA REGIONAL
 const selectRegional = document.getElementById('slt_regional');
 selectRegional.addEventListener('change', function() {
@@ -70,83 +82,93 @@ form.addEventListener('submit', function(e) {
     apiCall(dataForm);
 });
 
-// function validateFormUf(dataForm) {
-//     regional = document.getElementById('slt_regional').value,
-//     uf = document.getElementById('slt_uf').value,
-// }
-
 // FUNÇÃO REQUEST PARA (api.php) PARA PERSISTENCIA DE DADOS
 async function apiCall(dataForm) {
-   try {
-       const response = await fetch('public/api.php', {
-           method: 'POST',
-           headers: {
-               'Content-Type': 'application/json'
-           },
-           body: JSON.stringify(dataForm)
-       });
+    try {
+        const response = await fetch('public/api.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(dataForm)
+        });
 
-    //    console.log(dataForm);
+        if (!response.ok) throw new Error('Network response was not ok');
 
-       if (!response.ok) {
-           throw new Error('Network response was not ok');
-       }
+        const rawData = await response.json();
+        const container = document.getElementById('chartContainer');
 
-       const data = await response.json();
-       console.log(data);
-   } catch (error) {
-       console.error('There was a problem with the fetch operation:', error);
-   }
+        console.log(rawData);
+
+        // Limpa gráficos antigos
+        container.innerHTML = '';
+
+        for (const uf in rawData) {
+            const ufData = rawData[uf];
+
+            const chartWrapper = document.createElement('div');
+            chartWrapper.className = 'chart-wrapper';
+
+            const title = document.createElement('h4');
+            title.textContent = `${uf}`;
+            chartWrapper.appendChild(title);
+
+            const canvas = document.createElement('canvas');
+            chartWrapper.appendChild(canvas);
+            container.appendChild(chartWrapper);
+
+            // Pega todos os dias únicos para o eixo X
+            const labels = [...new Set(ufData.map(item => item.dia))];
+
+            // Agrupa os dados por macro_atividade
+            const atividades = {};
+            ufData.forEach(item => {
+                if (!atividades[item.macro_atividade]) atividades[item.macro_atividade] = {};
+                atividades[item.macro_atividade][item.dia] = item.fila;
+            });
+
+            // Cria datasets para cada macro_atividade
+            const datasets = Object.keys(atividades).map((atividade, index) => {
+                return {
+                    label: atividade,
+                    data: labels.map(dia => atividades[atividade][dia] || 0), // preenche com 0 se não tiver dado
+                    fill: true,
+                    tension: 0.3,
+                    borderColor: index === 0 ? '#FF0000' : '#0000FF', // cores diferentes
+                    pointBackgroundColor: '#000'
+                };
+            });
+
+            new Chart(canvas, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: datasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: true },
+                        datalabels: {
+                            align: 'end',
+                            anchor: 'end',
+                            color: '#000',
+                            font: { size: 11 }
+                        }
+                    },
+                    layout: {
+                        padding: { left: 35, right: 35, top: 25, bottom: 0 }
+                    },
+                    scales: {
+                        x: { display: true, grid: { display: false } },
+                        y: { display: false, grid: { display: false } }
+                    }
+                },
+                plugins: [ChartDataLabels]
+            });
+        }
+    } catch (error) {
+        console.error('There was a problem with the fetch operation:', error);
+    }
 }
 
 preencherDatas();
-
-// function createGraphs()
-// {
-//     const options = {
-//         maintainAspectRatio: false,
-//         responsive: true,
-//         plugins: {legend: {display: false}},
-//         layout: {padding: {right: 17, left: 15, top: 15}},
-//         scales: {
-//             x: {display: true, grid: { display: false }},
-//             y: {display: false, grid: { display: false }}
-//         },
-//     };
-
-//     const data = {
-//         labels: dados.legends_graf,
-//         datasets: [{
-//                 type: 'line',
-//                 backgroundColor: ['rgba(216, 17, 89, .6)'],
-//                 pointBackgroundColor: '#000',
-//                 fill: true,
-//                 data: dados.performace,
-//                 tension: 0.3,
-//                 datalabels: {
-//                     align: 'start',
-//                     anchor: 'end',
-//                     align: 'end',
-//                     color: '#000',
-//                     font: {
-//                         size: 11
-//                     },
-//                     formatter: (value, context) => {
-//                         const valor = context.chart.data.datasets[0].data;
-//                         const percentageValue = [`${value}%`];
-//                         return percentageValue;
-//                     }
-//                 },
-//                 order: 1
-//             }
-//         ]
-//     };
-
-//     new Chart("myChart2", {
-//         data: data,
-//         options: options,
-//         plugins: [ChartDataLabels]
-//     })
-
-    
-// }
