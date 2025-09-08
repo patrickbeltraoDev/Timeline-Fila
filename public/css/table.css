@@ -1,0 +1,49 @@
+.table-wrapper {
+    margin-bottom: 30px;
+}
+
+.table-wrapper h4 {
+    margin-bottom: 10px;
+    font-size: 18px;
+    color: #333;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    background: #fff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.data-table thead {
+    background: #007bff;
+    color: #fff;
+}
+
+.data-table th, 
+.data-table td {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+}
+
+.data-table tbody tr:nth-child(even) {
+    background: #f9f9f9;
+}
+
+.data-table tbody tr:hover {
+    background: #f1f7ff;
+}
+
+.table-wrapper {
+    grid-column: span 2; /* ocupa as 2 colunas do grid */
+    overflow-x: auto;   /* ativa scroll horizontal se tiver muitas colunas */
+}
+
+.table-wrapper table {
+    min-width: 600px;   /* largura mínima pra não ficar espremida */
+}

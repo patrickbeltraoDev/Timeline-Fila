@@ -1,3 +1,4 @@
+// ARRAY DE UFS POR REGIONAL
 const ufList = [
     { regional: 'RCO', uf: ['', 'AC', 'DF', 'GO', 'MS', 'MT', 'RO', 'TO'] },
     { regional: 'RMG', uf: ['', 'MG', 'ES'] },
@@ -5,7 +6,8 @@ const ufList = [
     { regional: 'RSP', uf: ['', 'SP'] }
 ];
 
-const btnImglineGrapsh = document.querySelector('.rw-img img');
+// ALTERAR O LAYOUT DO CONTAINER (GRID/FLEX)
+const btnImglineGrapsh = document.querySelectorAll('.rw-img img')[2];
 btnImglineGrapsh.addEventListener('click', function() {
     const chartContainer = document.getElementById('chartContainer');
     if (chartContainer.style.display === 'grid') {
@@ -17,7 +19,19 @@ btnImglineGrapsh.addEventListener('click', function() {
   
 });
 
-// SCRIPT RESPONSÁVEL POR PREENCHER AS UFS DE ACORDO COM O FILTRO DA REGIONAL
+// RENDERIZAÇÃO GRÁFICOS
+const btnImgGraphs = document.querySelectorAll('.rw-img img')[0];
+btnImgGraphs.addEventListener('click', function() {
+    renderCharts(rawDataCache);
+});
+
+// RENDERIZAÇÃO DA TABELA
+const btnImgTable = document.querySelectorAll('.rw-img img')[1];
+btnImgTable.addEventListener('click', function() {
+    renderTable(rawDataCache);
+});
+
+// PREENCHER AS UFS DE ACORDO COM O FILTRO DA REGIONAL
 const selectRegional = document.getElementById('slt_regional');
 selectRegional.addEventListener('change', function() {
     
@@ -35,7 +49,7 @@ selectRegional.addEventListener('change', function() {
     }
 });
 
-// SCRIPT REPONSÁVEL POR PREENCHER OS INPUTS DE DATA
+// PREENCHER OS INPUTS DE DATA
 function preencherDatas() {
     const hoje = new Date();
     const ano = hoje.getFullYear();
@@ -59,18 +73,30 @@ function preencherDatas() {
     document.getElementById('iptDtEnd').value = formatar(ultimoDia);
 }
 
-// SCRIPT REPONSÁVEL POR RECARREGAR A PÁGINA NO CASO DO USO (LIMPAR FILTROS)
+// RECARREGAR A PÁGINA NO CASO DO USO (LIMPAR FILTROS)
 const btnClearFilter = document.getElementById('btnClearFilter');
 btnClearFilter.addEventListener('click', function() {
     window.location.reload();
 });
 
-// SCRIPT PARA PEGAR OS VALORES DO FILTRO E CHAMAR A FUNÇÃO (apiCall) ASYNC
+// PEGAR OS VALORES DO FILTRO E CHAMAR A FUNÇÃO (apiCall) ASYNC
 const form = document.getElementById('formFilter');
 form.addEventListener('submit', function(e) {
-    e.preventDefault(); // evita reload da página
+    e.preventDefault(); 
 
-    // Pega os valores do formulário
+    if (!document.getElementById('slt_regional').value) {
+        Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Por favor preencher os filtros para a consulta.",
+            // footer: 'Telemont',
+            customClass: {
+                popup: 'swal-small-text'
+            }
+        });
+        return;
+    }
+
     const dataForm = {
         regional: document.getElementById('slt_regional').value,
         uf: document.getElementById('slt_uf').value,
@@ -82,7 +108,8 @@ form.addEventListener('submit', function(e) {
     apiCall(dataForm);
 });
 
-// FUNÇÃO REQUEST PARA (api.php) PARA PERSISTENCIA DE DADOS
+// CHAMADA DA API E RENDERIZAÇÃO DOS GRÁFICOS E TABELA
+let rawDataCache = null; // variável global para armazenar o resultado
 async function apiCall(dataForm) {
     try {
         const response = await fetch('public/api.php', {
@@ -93,82 +120,36 @@ async function apiCall(dataForm) {
 
         if (!response.ok) throw new Error('Network response was not ok');
 
-        const rawData = await response.json();
-        const container = document.getElementById('chartContainer');
+        rawDataCache = await response.json();
+        console.log(rawDataCache);
 
-        console.log(rawData);
+        renderCharts(rawDataCache);
 
-        // Limpa gráficos antigos
-        container.innerHTML = '';
-
-        for (const uf in rawData) {
-            const ufData = rawData[uf];
-
-            const chartWrapper = document.createElement('div');
-            chartWrapper.className = 'chart-wrapper';
-
-            const title = document.createElement('h4');
-            title.textContent = `${uf}`;
-            chartWrapper.appendChild(title);
-
-            const canvas = document.createElement('canvas');
-            chartWrapper.appendChild(canvas);
-            container.appendChild(chartWrapper);
-
-            // Pega todos os dias únicos para o eixo X
-            const labels = [...new Set(ufData.map(item => item.dia))];
-
-            // Agrupa os dados por macro_atividade
-            const atividades = {};
-            ufData.forEach(item => {
-                if (!atividades[item.macro_atividade]) atividades[item.macro_atividade] = {};
-                atividades[item.macro_atividade][item.dia] = item.fila;
-            });
-
-            // Cria datasets para cada macro_atividade
-            const datasets = Object.keys(atividades).map((atividade, index) => {
-                return {
-                    label: atividade,
-                    data: labels.map(dia => atividades[atividade][dia] || 0), // preenche com 0 se não tiver dado
-                    fill: true,
-                    tension: 0.3,
-                    borderColor: index === 0 ? '#FF0000' : '#0000FF', // cores diferentes
-                    pointBackgroundColor: '#000'
-                };
-            });
-
-            new Chart(canvas, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: datasets
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: true },
-                        datalabels: {
-                            align: 'end',
-                            anchor: 'end',
-                            color: '#000',
-                            font: { size: 11 }
-                        }
-                    },
-                    layout: {
-                        padding: { left: 35, right: 35, top: 25, bottom: 0 }
-                    },
-                    scales: {
-                        x: { display: true, grid: { display: false } },
-                        y: { display: false, grid: { display: false } }
-                    }
-                },
-                plugins: [ChartDataLabels]
-            });
-        }
     } catch (error) {
         console.error('There was a problem with the fetch operation:', error);
     }
 }
+
+// VALIDAÇÃO PARA ABRIR OS SELECTS DE UF E MACRO ATIVIDADE
+function validarRegionalAntesDeAbrir(selectId) {
+    const regional = document.getElementById('slt_regional').value;
+    if (!regional) {
+        Swal.fire({
+            text: "Por favor, selecione uma Regional primeiro.",
+            customClass: {
+                popup: 'swal-small-text'
+            }
+        });
+        return false; // bloqueia
+    }
+    return true;
+}
+['slt_uf', 'slt_macro_atividade'].forEach(id => {
+    document.getElementById(id).addEventListener('click', function(e) {
+        if (!validarRegionalAntesDeAbrir(id)) {
+            e.preventDefault(); // impede abrir o dropdown
+        }
+    });
+});
 
 preencherDatas();
