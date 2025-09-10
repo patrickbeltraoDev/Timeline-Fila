@@ -108,28 +108,6 @@ form.addEventListener('submit', function(e) {
     apiCall(dataForm);
 });
 
-// CHAMADA DA API E RENDERIZAÇÃO DOS GRÁFICOS E TABELA
-let rawDataCache = null; // variável global para armazenar o resultado
-async function apiCall(dataForm) {
-    try {
-        const response = await fetch('public/api.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(dataForm)
-        });
-
-        if (!response.ok) throw new Error('Network response was not ok');
-
-        rawDataCache = await response.json();
-        console.log(rawDataCache);
-
-        renderCharts(rawDataCache);
-
-    } catch (error) {
-        console.error('There was a problem with the fetch operation:', error);
-    }
-}
-
 // VALIDAÇÃO PARA ABRIR OS SELECTS DE UF E MACRO ATIVIDADE
 function validarRegionalAntesDeAbrir(selectId) {
     const regional = document.getElementById('slt_regional').value;
@@ -152,4 +130,25 @@ function validarRegionalAntesDeAbrir(selectId) {
     });
 });
 
+// CHAMADA DA API E RENDERIZAÇÃO DOS GRÁFICOS E TABELA
+let rawDataCache = null; // variável global para armazenar o resultado
+async function apiCall(dataForm) {
+    try {
+        const response = await fetch('public/api.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(dataForm)
+        });
+
+        if (!response.ok) throw new Error('Network response was not ok');
+
+        rawDataCache = await response.json();
+        // console.log(rawDataCache);
+
+        renderCharts(rawDataCache);
+
+    } catch (error) {
+        console.error('There was a problem with the fetch operation:', error);
+    }
+}
 preencherDatas();

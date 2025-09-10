@@ -17,24 +17,39 @@ function renderTable(rawData) {
 
         // Cabeçalho
         const labels = [...new Set(ufData.map(item => item.dia))];
-        let thead = '<tr><th>Atividade</th>';
-        labels.forEach(dia => { thead += `<th>Dia ${dia}</th>`; });
+        let thead = '<tr><th>Atividade</th><th>Tipo</th>';
+        labels.forEach(dia => {
+            thead += `<th>Dia ${dia}</th>`;
+        });
         thead += '</tr>';
         table.innerHTML = `<thead>${thead}</thead>`;
 
-        // Agrupa dados por atividade
+        // Agrupar dados
         const atividades = {};
         ufData.forEach(item => {
             if (!atividades[item.macro_atividade]) atividades[item.macro_atividade] = {};
-            atividades[item.macro_atividade][item.dia] = item.fila;
+            atividades[item.macro_atividade][item.dia] = {
+                fila: item.fila,
+                caixa_total: item.caixa_total
+            };
         });
 
-        // Linhas
+        // Linhas do corpo
         let tbody = '';
         Object.keys(atividades).forEach(atividade => {
-            tbody += `<tr><td>${atividade}</td>`;
+            // Linha Fila
+            tbody += `<tr class="col-fila"><td rowspan="2">${atividade}</td><td>Fila</td>`;
             labels.forEach(dia => {
-                tbody += `<td>${atividades[atividade][dia] || 0}</td>`;
+                const dados = atividades[atividade][dia] || { fila: 0, caixa_total: 0 };
+                tbody += `<td>${dados.fila}</td>`;
+            });
+            tbody += '</tr>';
+
+            // Linha Caixa Total
+            tbody += `<tr><td>Caixa Total</td>`;
+            labels.forEach(dia => {
+                const dados = atividades[atividade][dia] || { fila: 0, caixa_total: 0 };
+                tbody += `<td>${dados.caixa_total}</td>`;
             });
             tbody += '</tr>';
         });
@@ -44,3 +59,4 @@ function renderTable(rawData) {
         container.appendChild(wrapper);
     }
 }
+

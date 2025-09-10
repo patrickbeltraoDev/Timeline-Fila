@@ -14,7 +14,7 @@ class PdoRepository
     public function hydrateRepoByAtv($filter)
     {
         try {
-            $sql = "SELECT DAY(DIA) AS dia, macro_atividade, uf, TRUNCATE(fila, 1) AS fila 
+            $sql = "SELECT DAY(DIA) AS dia, macro_atividade, uf, caixa_total, TRUNCATE(fila, 1) AS fila 
                     FROM modulo_bucket_vtal.tbl_vtal_bucket_atividades_bas_fila_uf WHERE 1=1";
 
             $filters = $filter->getFilters();
