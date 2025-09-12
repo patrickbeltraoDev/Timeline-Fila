@@ -22,6 +22,8 @@ class PdoRepository
                 $sql .= " $condition";
             }
 
+            $sql .= " ORDER BY uf, dia";
+
             $stmt = $this->pdo->prepare($sql);
             $stmt->execute();
             return $stmt->fetchAll();
