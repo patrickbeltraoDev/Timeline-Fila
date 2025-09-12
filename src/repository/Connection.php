@@ -3,6 +3,7 @@
 class Connection
 {
     private $host = "34.69.169.180";
+    // private $host = "34.45.135.211";
     private $db_name = "pci";
     private $username = "pcidatabase";
     private $password = 'z"tF&uUrq?*v0t%A';
