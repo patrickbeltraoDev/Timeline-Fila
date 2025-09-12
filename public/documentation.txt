@@ -1,0 +1,48 @@
+Página(Relatório) desenvolvido para acompanhamento da Fila dia-a-dia.
+
+Autor: Patrick Beltrão
+Data: 01/09/2025
+
+## BASES ##
+Bases utilizadas: modulo_bucket_vtal.tbl_vtal_bucket_atividades_bas_fila_uf
+Descrição: Base tras resultado da fila dia a dia, pegando resultado congelado da primeira hora do dia.
+Resposavel pela atualização da base: Eder Soares
+Hora de atualização: 07:00 a 07:30
+
+
+## ARQUITETURA ##
+View: (timeline-fila.php)
+Controller Request: (public/api.php)
+Controller Response: (public/js/timeline-fila.js)
+DTO: (service/DataFilter.php)
+Repository: (repository/PdoRepository.php)
+Hydrate: (service/RelatorioService.php)
+
+## RENDER ##
+Ggerador de Gráficos: (js/renderGraphs.js)
+Gerador de Tabelas: (js/renderTable.js)
+
+TIMELINE FILA
+ ┣ public
+ ┃ ┣ css
+ ┃ ┃ ┣ container.css
+ ┃ ┃ ┣ graphs.css
+ ┃ ┃ ┗ table.css
+ ┃ ┣ image
+ ┃ ┃ ┣ barra-de-menu.png
+ ┃ ┃ ┣ btnGenerateGraphs.png
+ ┃ ┃ ┗ btnGenerateTable.png
+ ┃ ┣ js
+ ┃ ┃ ┣ renderGraphs.js
+ ┃ ┃ ┣ renderTable.js
+ ┃ ┃ ┗ timeline-fila.js
+ ┃ ┣ api.php
+ ┃ ┗ documentation.txt
+ ┣ src
+ ┃ ┣ repository
+ ┃ ┃ ┣ Connection.php
+ ┃ ┃ ┗ PdoRepository.php
+ ┃ ┗ service
+ ┃ ┃ ┣ DataFilter.php
+ ┃ ┃ ┗ RelatorioService.php
+ ┗ timeline-fila.php
